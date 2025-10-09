@@ -1,88 +1,87 @@
-🥗 Food2Plate – AI-Powered Food Donation & Waste Reduction Platform
-🌍 Turning Surplus Food into Smiles, Not Waste
-🚩 Problem Statement
+# 🥗 Food2Plate – AI-Powered Food Donation & Waste Reduction Platform  
 
-Every day, tons of edible food are wasted by restaurants, hostels, and households — while millions of people go hungry.
-There’s no efficient, transparent, and safe way to distribute surplus food responsibly.
-Additionally, food safety and quality assurance remain major concerns when sharing leftovers.
+### 🌍 *Turning Surplus Food into Smiles, Not Waste*  
 
-💡 Proposed Solution
+---
 
-Food2Plate is an AI-powered food donation platform that connects donors (restaurants, homes, cafeterias) with receivers (NGOs, shelters, needy individuals).
+## 🚩 Problem Statement  
 
-The platform ensures:
+Every day, tons of edible food are wasted by restaurants, hostels, and households — while millions of people go hungry.  
+There’s no efficient, transparent, and safe way to distribute surplus food responsibly.  
+Additionally, food safety and quality assurance remain major concerns when sharing leftovers.  
 
-✅ Safe food sharing through AI-based food quality detection
+---
 
-🗺️ Easy discovery via Google Maps integration
+## 💡 Proposed Solution  
 
-🏅 Motivation through Gamification & CSR Rewards
+**Food2Plate** is an **AI-powered food donation platform** that connects **donors** (restaurants, homes, cafeterias) with **receivers** (NGOs, shelters, needy individuals).  
 
-📊 Awareness through Carbon Footprint & Impact Tracking
+The platform ensures:  
+✅ Safe food sharing through **AI-based food quality detection**  
+🗺️ Easy discovery via **Google Maps integration**  
+🏅 Motivation through **Gamification & CSR Rewards**  
+📊 Awareness through **Carbon Footprint & Impact Tracking**  
 
-Mission: To reduce food waste, promote sustainability, and ensure no one sleeps hungry.
+> 🎯 **Mission:** To reduce food waste, promote sustainability, and ensure no one sleeps hungry.
 
-🧠 Key Features
-🤖 AI Food Quality Predictor
+---
 
-Uses an AI model to analyze uploaded food images.
+## 🧠 Key Features  
 
-Predicts freshness, confidence level, and estimated shelf life.
+### 🤖 AI Food Quality Predictor  
+- Uses an AI model to analyze uploaded food images.  
+- Predicts **freshness**, **confidence level**, and **estimated shelf life**.  
+- Generates a digital **AI Quality Report** for every post.  
 
-Generates a digital AI Quality Report for every post.
+### 📦 Donor Food Posting  
+- Donors upload food image + details + AI report.  
+- Add exact **pickup location via Google Map**.  
+- Posts saved to backend with reports attached.  
 
-📦 Donor Food Posting
+### 👥 Receiver Dashboard  
+- Displays available food posts along with donor’s AI reports.  
+- Option to **recheck food quality** before reserving.  
+- Reserve food seamlessly with one click.  
 
-Donors upload image + details + AI report.
+### 🧾 Reports & Transparency  
+- Both donors and receivers can view AI-generated reports.  
+- Promotes **trust, accountability, and food safety**.  
 
-Add exact pickup location via Google Map.
+### 🏅 Gamification & CSR Integration  
+- Donors and receivers earn **Green Points**.  
+- Generate **CSR certificates** for businesses and restaurants.  
+- Visual dashboard shows **CO₂ saved & food distributed**.  
 
-Posts saved to backend with reports attached.
+---
 
-👥 Receiver Dashboard
+## 🧩 Tech Stack  
 
-Displays available food posts along with donor’s AI reports.
+| Layer | Technology |
+|-------|-------------|
+| **Frontend** | React + Vite + Tailwind CSS |
+| **Backend** | FastAPI (Python) |
+| **Database** | SQLite (local) / Supabase (cloud) |
+| **AI Model** | Image Classification API (FastAPI endpoint) |
+| **Maps Integration** | Google Maps API |
+| **Authentication** | JWT + Google OAuth |
+| **Hosting** | Vercel (Frontend) + Render (Backend) |
+| **Version Control** | GitHub |
 
-Option to recheck food quality before reserving.
+---
 
-Reserve food seamlessly with one click.
+## ⚙️ Setup Instructions  
 
-🧾 Reports & Transparency
-
-Both donors and receivers can view AI-generated reports.
-
-Promotes trust, accountability, and food safety.
-
-🏅 Gamification & CSR Integration
-
-Donors and receivers earn Green Points.
-
-Generate CSR certificates for businesses and restaurants.
-
-Visual dashboard shows CO₂ saved & food distributed.
-
-🧩 Tech Stack
-Layer	Technology
-Frontend	React + Vite + Tailwind CSS
-Backend	FastAPI (Python)
-Database	SQLite (local) / Supabase (cloud)
-AI Model	Image classification API (FastAPI endpoint)
-Maps Integration	Google Maps API
-Authentication	JWT + Google OAuth
-Hosting	Vercel (Frontend) + Render (Backend)
-Version Control	GitHub
-⚙️ Setup Instructions
-🧱 Clone the Repository
+### 🧱 Clone the Repository  
+```bash
 git clone https://github.com/HarishSidagam8/Food2Plate.git
 cd Food2Plate
-
 💻 Frontend Setup
 cd frontend
 npm install
 npm run dev
 
 
-Create .env file:
+Create a .env file in the frontend folder:
 
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_key
@@ -94,7 +93,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 
 
-.env:
+Create a .env file in the backend folder:
 
 SUPABASE_URL=your_supabase_url
 SUPABASE_SERVICE_KEY=your_service_key
@@ -119,23 +118,23 @@ Metric	Description
 
 🌱 Future Enhancements
 
-AI model improvement using multi-modal data (image + temperature + time).
+AI model improvement using multi-modal data (image + temperature + time)
 
-Blockchain integration for food traceability.
+Blockchain integration for food traceability
 
-Volunteer delivery coordination system.
+Volunteer delivery coordination system
 
-Mobile app version for on-the-go donations.
+Mobile app version for on-the-go donations
 
-Real-time food freshness tracking with IoT sensors.
+Real-time food freshness tracking using IoT sensors
 
 🧑‍💻 Contributors
 
-Harish Sidagam –AI-ML Engineer, FrontEnd Developer
+👨‍💻 Harish Sidagam – AI/ML Engineer & Front-End Developer
 
 🏁 License
 
-Licensed under the MIT License – free to use, modify, and distribute.
+Licensed under the MIT License — free to use, modify, and distribute.
 
 💬 Contact
 

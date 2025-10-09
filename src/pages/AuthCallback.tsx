@@ -63,7 +63,8 @@ export default function AuthCallback() {
       const { error } = await (supabase as any)
         .from('profiles')
         .insert({
-          user_id: user.id,
+          id: user.id,
+          user_id: user.id,              // optional: keep
           full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
           email: user.email || '',
           role: selectedRole

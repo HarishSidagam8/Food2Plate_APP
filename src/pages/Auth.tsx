@@ -57,8 +57,7 @@ export default function Auth() {
         const { error: profileError } = await (supabase as any)
           .from('profiles')
           .insert({
-            id: authData.id,
-            user_id: authData.user.id,     // optional: keep for compatibility if used elsewhere
+            user_id: authData.user.id,
             full_name: validated.full_name,
             email: validated.email,
             role: validated.role

@@ -1,10 +1,14 @@
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Leaf, Users, Heart, TrendingUp, ArrowRight, MapPin, Clock, CheckCircle, Globe, Sparkles } from 'lucide-react';
+import { Leaf, Users, Heart, TrendingUp, ArrowRight, MapPin, Clock, CheckCircle, Globe, Sparkles, Shield, Zap, Award, Newspaper, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/food2plate-logo.png';
+import communitySharing from '@/assets/community-sharing.jpg';
+import appInterface from '@/assets/app-interface.jpg';
+import foodWasteNews from '@/assets/food-waste-news.jpg';
+import rescuedFood from '@/assets/rescued-food.jpg';
 
 const Index = () => {
   const { user, profile } = useAuth();
@@ -57,6 +61,95 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-4xl font-bold mb-4">Our Services</h2>
+            <p className="text-xl text-muted-foreground">Comprehensive solutions for food waste reduction</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto mb-16">
+            <div className="space-y-6 animate-fade-in">
+              <img 
+                src={communitySharing} 
+                alt="Community food sharing" 
+                className="rounded-xl shadow-lg w-full h-80 object-cover hover-scale"
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <Card className="hover-scale transition-all duration-300">
+                  <CardHeader>
+                    <Shield className="h-10 w-10 text-primary mb-2" />
+                    <CardTitle className="text-lg">Quality Verified</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">AI-powered quality checks ensure food safety</p>
+                  </CardContent>
+                </Card>
+                <Card className="hover-scale transition-all duration-300">
+                  <CardHeader>
+                    <Zap className="h-10 w-10 text-accent mb-2" />
+                    <CardTitle className="text-lg">Real-Time</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">Instant notifications and live updates</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="space-y-6 animate-fade-in [animation-delay:200ms]">
+              <img 
+                src={appInterface} 
+                alt="Food2Plate app interface" 
+                className="rounded-xl shadow-lg w-full h-80 object-cover hover-scale"
+              />
+              <Card className="hover-scale transition-all duration-300 border-2 border-primary/20">
+                <CardHeader>
+                  <Award className="h-10 w-10 text-primary mb-2" />
+                  <CardTitle>Impact Tracking & Rewards</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Track your environmental impact, earn green points, and receive certificates for your contributions to the community.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Card className="text-center hover-scale transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in [animation-delay:300ms]">
+              <CardHeader>
+                <MapPin className="h-12 w-12 text-primary mx-auto mb-3" />
+                <CardTitle>Location-Based</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Find and donate food in your local area with interactive maps and distance filtering</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover-scale transition-all duration-300 border-2 hover:border-accent/50 animate-fade-in [animation-delay:400ms]">
+              <CardHeader>
+                <Clock className="h-12 w-12 text-accent mx-auto mb-3" />
+                <CardTitle>Smart Scheduling</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Flexible pickup times and automated reminders ensure smooth coordination</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center hover-scale transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in [animation-delay:500ms]">
+              <CardHeader>
+                <Users className="h-12 w-12 text-primary mx-auto mb-3" />
+                <CardTitle>Community First</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Built on trust with ratings, reviews, and verified profiles for safety</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -225,6 +318,115 @@ const Index = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* News & Insights Section */}
+      <section className="py-20 bg-gradient-to-b from-background to-card/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Newspaper className="h-8 w-8 text-primary" />
+              <h2 className="text-4xl font-bold">Latest News & Insights</h2>
+            </div>
+            <p className="text-xl text-muted-foreground">Stay informed about food waste crisis and solutions</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <Card className="overflow-hidden hover-scale transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in">
+              <img 
+                src={foodWasteNews} 
+                alt="Food waste statistics" 
+                className="w-full h-64 object-cover"
+              />
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-2xl">Global Food Waste Reaches Crisis Levels</CardTitle>
+                  <ExternalLink className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  New UN report reveals that 931 million tonnes of food were wasted in 2024, equivalent to 17% of total food available to consumers. Household waste accounts for 61% of total food waste.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-destructive/10 text-destructive rounded-full text-sm font-medium">
+                    Environmental Crisis
+                  </span>
+                  <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                    Global Impact
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">Published: January 2025 • UN Environment Programme</p>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden hover-scale transition-all duration-300 border-2 hover:border-accent/50 animate-fade-in [animation-delay:200ms]">
+              <img 
+                src={rescuedFood} 
+                alt="Food rescue initiative" 
+                className="w-full h-64 object-cover"
+              />
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <CardTitle className="text-2xl">Food Rescue Apps Save 50 Million Meals</CardTitle>
+                  <ExternalLink className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Food sharing platforms have prevented 125,000 tonnes of CO2 emissions in 2024, connecting surplus food from businesses to communities in need through innovative technology solutions.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                    Success Story
+                  </span>
+                  <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium">
+                    Technology
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">Published: December 2024 • Food Rescue Alliance</p>
+              </CardContent>
+            </Card>
+
+            <Card className="lg:col-span-2 hover-scale transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in [animation-delay:300ms]">
+              <CardHeader>
+                <CardTitle className="text-2xl">Key Statistics You Should Know</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="text-center p-4 bg-primary/5 rounded-lg">
+                    <div className="text-3xl font-bold text-primary mb-2">$1T</div>
+                    <p className="text-sm text-muted-foreground">Economic cost of food waste globally per year</p>
+                  </div>
+                  <div className="text-center p-4 bg-destructive/5 rounded-lg">
+                    <div className="text-3xl font-bold text-destructive mb-2">1.3B</div>
+                    <p className="text-sm text-muted-foreground">Tonnes of food wasted annually worldwide</p>
+                  </div>
+                  <div className="text-center p-4 bg-accent/5 rounded-lg">
+                    <div className="text-3xl font-bold text-accent mb-2">25%</div>
+                    <p className="text-sm text-muted-foreground">Of global water use goes to wasted food</p>
+                  </div>
+                  <div className="text-center p-4 bg-primary/5 rounded-lg">
+                    <div className="text-3xl font-bold text-primary mb-2">3.3B</div>
+                    <p className="text-sm text-muted-foreground">Tonnes of CO2 from food waste if it were a country</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-12 animate-fade-in [animation-delay:400ms]">
+            <p className="text-muted-foreground mb-4">
+              Food2Plate is part of the solution. Join us in making a difference.
+            </p>
+            <Link to="/impact">
+              <Button variant="outline" size="lg" className="hover-scale">
+                View Our Community Impact
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -22,6 +22,7 @@ const defaultCenter = {
 };
 
 export const LocationPicker = ({ onLocationSelect, initialLocation }: LocationPickerProps) => {
+  const [useMap, setUseMap] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [apiKeyEntered, setApiKeyEntered] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(initialLocation || defaultCenter);
@@ -94,6 +95,48 @@ export const LocationPicker = ({ onLocationSelect, initialLocation }: LocationPi
     toast.success('Loading map...');
   };
 
+  // Manual address entry mode
+  if (!useMap) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="manual-address" className="text-lg font-semibold flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            Pickup Location
+          </Label>
+          <Input
+            id="manual-address"
+            type="text"
+            placeholder="Enter full pickup address"
+            value={address}
+            onChange={(e) => {
+              const newAddress = e.target.value;
+              setAddress(newAddress);
+              // For manual entry, we pass 0,0 as coordinates since we don't have exact lat/lng
+              if (newAddress.trim()) {
+                onLocationSelect({ address: newAddress, lat: 0, lng: 0 });
+              }
+            }}
+            required
+          />
+          <p className="text-xs text-muted-foreground">
+            Enter the complete address where receivers can pick up the food.
+          </p>
+        </div>
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={() => setUseMap(true)}
+          className="w-full"
+        >
+          <MapPin className="h-4 w-4 mr-2" />
+          Use Map Instead (Optional)
+        </Button>
+      </div>
+    );
+  }
+
+  // Map mode - API key entry
   if (!apiKeyEntered) {
     return (
       <div className="space-y-4 p-6 border rounded-lg bg-muted/30">
@@ -103,7 +146,7 @@ export const LocationPicker = ({ onLocationSelect, initialLocation }: LocationPi
             Google Maps API Key
           </Label>
           <p className="text-sm text-muted-foreground">
-            To use the location picker, please enter your Google Maps API key.{' '}
+            To use the map picker, please enter your Google Maps API key.{' '}
             <a
               href="https://developers.google.com/maps/documentation/javascript/get-api-key"
               target="_blank"
@@ -122,25 +165,49 @@ export const LocationPicker = ({ onLocationSelect, initialLocation }: LocationPi
             className="font-mono text-sm"
           />
         </div>
-        <Button onClick={handleLoadMap} className="w-full">
-          <MapPin className="h-4 w-4 mr-2" />
-          Load Map
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleLoadMap} className="flex-1">
+            <MapPin className="h-4 w-4 mr-2" />
+            Load Map
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => setUseMap(false)}
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     );
   }
 
+  // Map mode - active map view
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <Label className="text-lg font-semibold flex items-center gap-2">
           <MapPin className="h-5 w-5 text-primary" />
-          Select Location
+          Select Location on Map
         </Label>
-        <Button onClick={getCurrentLocation} variant="outline" size="sm">
-          <Navigation className="h-4 w-4 mr-2" />
-          Use Current Location
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={getCurrentLocation} variant="outline" size="sm">
+            <Navigation className="h-4 w-4 mr-2" />
+            Use Current Location
+          </Button>
+          <Button 
+            type="button"
+            variant="ghost" 
+            size="sm"
+            onClick={() => {
+              setUseMap(false);
+              setApiKeyEntered(false);
+            }}
+          >
+            Manual Entry
+          </Button>
+        </div>
       </div>
 
       <LoadScript googleMapsApiKey={apiKey}>

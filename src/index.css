@@ -5,6 +5,81 @@
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
+/* Custom animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.6s ease-out;
+}
+
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Animation delays */
+[animation-delay\:200ms] {
+  animation-delay: 200ms;
+}
+
+[animation-delay\:300ms] {
+  animation-delay: 300ms;
+}
+
+[animation-delay\:400ms] {
+  animation-delay: 400ms;
+}
+
+[animation-delay\:500ms] {
+  animation-delay: 500ms;
+}
+
+[animation-delay\:600ms] {
+  animation-delay: 600ms;
+}
+
+[animation-delay\:800ms] {
+  animation-delay: 800ms;
+}
+
+/* Grid background pattern */
+.bg-grid-white\/10 {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+}
+
+.bg-grid-white\/5 {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
 
 @layer base {
   :root {

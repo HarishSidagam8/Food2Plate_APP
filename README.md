@@ -107,6 +107,7 @@ cd Food2Plate_APP
 ```
 cd frontend
 npm install
+npm run build
 npm run dev
 ```
 
@@ -122,16 +123,12 @@ VITE_BACKEND_URL=https://your-backend.onrender.com
 
 (If you’re using Supabase Edge Functions, deployment is automatic)
 Otherwise, for FastAPI or custom backend:
-```
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
+
 **🚀 Deployment**
 Platform	Purpose
 Vercel	Frontend hosting
 Supabase	Database, Auth, Storage, Edge Functions
-Google Cloud Console	Maps API & OAuth credentials
+Google Cloud Console	Maps API & OAuth credentials (paid)
 
 💡 All services used are completely free under their free tiers.
 
@@ -176,5 +173,7 @@ Licensed under the MIT License — free to use, modify, and distribute.
 🌐 GitHub: https://github.com/HarishSidagam8
 
 🌐 Live Demo: https://food2plate-app.vercel.app/
+            **-->After creating an account you will get confirmation Email from supabase
+             Confirm it to Login in**
 
 💡 Let’s fight hunger and food waste — one plate at a time. 🍽️💚

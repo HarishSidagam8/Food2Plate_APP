@@ -173,6 +173,7 @@ Licensed under the MIT License — free to use, modify, and distribute.
 🌐 GitHub: https://github.com/HarishSidagam8
 
 🌐 Live Demo: https://food2plate-app.vercel.app/
+
             **-->After creating an account you will get confirmation Email from supabase
              Confirm it to Login in**
 

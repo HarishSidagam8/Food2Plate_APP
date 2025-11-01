@@ -5,17 +5,14 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Sparkles, Clock, CheckCircle2, AlertTriangle, XCircle, AlertCircle } from 'lucide-react';
+import { Sparkles, Clock, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export interface AnalysisResult {
   quality: 'Fresh' | 'Medium' | 'Stale';
   shelfLifeHours: number;
   confidence: number;
   reasoning: string;
-  isFood?: boolean;
-  error?: string;
 }
 
 const qualityConfig = {
@@ -38,15 +35,10 @@ export function FoodQualityAnalyzer({
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(preloadedImageUrl || null);
-  const [notFoodError, setNotFoodError] = useState<string | null>(null);
 
   const handleImageAnalysis = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Reset previous states
-    setNotFoodError(null);
-    setResult(null);
 
     // Create preview
     const reader = new FileReader();
@@ -56,6 +48,7 @@ export function FoodQualityAnalyzer({
     reader.readAsDataURL(file);
 
     setAnalyzing(true);
+    setResult(null);
 
     try {
       // Convert image to base64
@@ -71,21 +64,16 @@ export function FoodQualityAnalyzer({
           throw error;
         }
 
-        // Check if it's not a food item
-        if (data.isFood === false || data.error) {
-          setNotFoodError(data.error || data.reasoning || 'This image does not appear to be food.');
-          toast.error('Not a food image');
-          setImagePreview(null); // Clear the preview
-          return;
+        if (data.error) {
+          throw new Error(data.error);
         }
 
-        // The edge function returns the analysis directly
+        // The edge function returns the analysis directly, not wrapped in an 'analysis' field
         const analysisResult: AnalysisResult = {
           quality: data.quality,
           shelfLifeHours: data.shelfLifeHours,
           confidence: data.confidence,
-          reasoning: data.reasoning,
-          isFood: data.isFood
+          reasoning: data.reasoning
         };
         setResult(analysisResult);
         onAnalysisComplete?.(analysisResult);
@@ -95,7 +83,6 @@ export function FoodQualityAnalyzer({
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('Failed to analyze food');
-      setNotFoodError('Failed to analyze the image. Please try again.');
     } finally {
       setAnalyzing(false);
     }
@@ -106,7 +93,6 @@ export function FoodQualityAnalyzer({
 
     setAnalyzing(true);
     setResult(null);
-    setNotFoodError(null);
 
     try {
       const response = await fetch(preloadedImageUrl);
@@ -121,21 +107,14 @@ export function FoodQualityAnalyzer({
         });
 
         if (error) throw error;
+        if (data.error) throw new Error(data.error);
 
-        // Check if it's not a food item
-        if (data.isFood === false || data.error) {
-          setNotFoodError(data.error || data.reasoning || 'This image does not appear to be food.');
-          toast.error('Not a food image');
-          return;
-        }
-
-        // The edge function returns the analysis directly
+        // The edge function returns the analysis directly, not wrapped in an 'analysis' field
         const analysisResult: AnalysisResult = {
           quality: data.quality,
           shelfLifeHours: data.shelfLifeHours,
           confidence: data.confidence,
-          reasoning: data.reasoning,
-          isFood: data.isFood
+          reasoning: data.reasoning
         };
         setResult(analysisResult);
         onAnalysisComplete?.(analysisResult);
@@ -145,7 +124,6 @@ export function FoodQualityAnalyzer({
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('Failed to analyze food');
-      setNotFoodError('Failed to analyze the image. Please try again.');
     } finally {
       setAnalyzing(false);
     }
@@ -166,7 +144,7 @@ export function FoodQualityAnalyzer({
         </div>
       )}
 
-      {preloadedImageUrl && !result && !notFoodError && (
+      {preloadedImageUrl && !result && (
         <Button 
           onClick={analyzePreloadedImage}
           disabled={analyzing}
@@ -185,28 +163,13 @@ export function FoodQualityAnalyzer({
         </div>
       )}
 
-      {/* Show error when not a food image */}
-      {notFoodError && !analyzing && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Not a Food Image</AlertTitle>
-          <AlertDescription>
-            {notFoodError}
-            <br />
-            <span className="text-xs mt-2 block">
-              Please upload a clear photo of food items such as fruits, vegetables, cooked meals, or baked goods.
-            </span>
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {imagePreview && !analyzing && !notFoodError && (
+      {imagePreview && !analyzing && (
         <div className="rounded-lg overflow-hidden border">
           <img src={imagePreview} alt="Food preview" className="w-full h-48 object-cover" />
         </div>
       )}
 
-      {result && !analyzing && !notFoodError && (
+      {result && !analyzing && (
         <div className={`p-6 rounded-lg ${qualityConfig[result.quality].bg} space-y-4`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

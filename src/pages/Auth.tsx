@@ -11,6 +11,15 @@ import { toast } from 'sonner';
 import logo from '@/assets/food2plate-logo.png';
 import { z } from 'zod';
 
+// After updating the profile with role
+await supabase.auth.refreshSession();
+
+// Then redirect based on role
+if (role === 'donor') {
+  window.location.href = '/donor-dashboard';
+} else {
+  window.location.href = '/receiver-dashboard';
+}
 const signupSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),

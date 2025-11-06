@@ -22,6 +22,18 @@ type AuthContextType = {
   loading: boolean;
   signOut: () => Promise<void>;
 };
+// Example inside useAuth or ProtectedRoute component
+const { session, isLoading } = useAuth(); // isLoading true until Supabase restores session
+
+if (isLoading) {
+  return <div className="flex justify-center items-center h-screen">Loading...</div>;
+}
+
+if (!session) {
+  return <Navigate to="/signin" />;
+}
+
+return <Outlet />; // or children (dashboard)
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

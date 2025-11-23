@@ -1,27 +1,27 @@
 // src/components/ChatBot.tsx
 
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, AlertCircle } from "lucide-react";
+import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface Message {
   id: string;
-  role: "user" | "assistant" | "error";
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
 }
 
 const QUICK_QUESTIONS = [
-  "Understanding food quality reports",
-  "Tips for reducing food waste",
-  "How to use the platform",
-  "Sustainability advice",
-  "Questions about donations",
+  "How do I donate food?",
+  "How do I find food donations?",
+  "Tell me about food quality analysis",
+  "Give me tips to reduce food waste",
+  "How does Food2Plate work?",
 ];
 
 export default function ChatBot() {
@@ -30,17 +30,16 @@ export default function ChatBot() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hello! 👋 I'm your Food2Plate Assistant. I can help you with:\n\n• Understanding food quality reports\n• Tips for reducing food waste\n• How to use the platform\n• Sustainability advice\n• Any questions about donations\n\nWhat would you like to know?",
+      content: "Hello! 👋 I'm your Food2Plate Assistant.\n\nI can help you with:\n• Understanding food quality reports\n• Tips for reducing food waste\n• How to use the platform\n• Sustainability advice\n• Questions about donations\n\nWhat would you like to know?",
       timestamp: new Date(),
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
@@ -62,24 +61,19 @@ export default function ChatBot() {
     setInput("");
     setIsLoading(true);
     setShowQuickQuestions(false);
-    setError(null);
 
     try {
-      console.log("Sending message to chatbot function...");
-      
-      const { data, error: functionError } = await supabase.functions.invoke("chatbot", {
+      const { data, error } = await supabase.functions.invoke("chatbot", {
         body: { message: textToSend },
       });
 
-      console.log("Response:", data);
-      console.log("Error:", functionError);
-
-      if (functionError) {
-        throw new Error(functionError.message || "Failed to get response from chatbot");
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw error;
       }
 
       if (!data || !data.reply) {
-        throw new Error("Invalid response format from chatbot");
+        throw new Error("Invalid response from chatbot");
       }
 
       const assistantMessage: Message = {
@@ -93,27 +87,20 @@ export default function ChatBot() {
     } catch (error: any) {
       console.error("Error sending message:", error);
       
-      let errorMessage = "I'm having trouble connecting. Please try again.";
-      
-      if (error.message?.includes("Failed to fetch")) {
-        errorMessage = "🔌 Connection error. Please check your internet connection.";
-        setError("Cannot connect to chatbot service. Please check if the Edge Function is deployed.");
-      } else if (error.message?.includes("not found")) {
-        errorMessage = "⚠️ Chatbot service not found. Please contact support.";
-        setError("Edge Function 'chatbot' not found. Run: supabase functions deploy chatbot");
-      } else if (error.message?.includes("API key")) {
-        errorMessage = "🔑 Service configuration error. Please contact support.";
-        setError("GROQ_API_KEY not set. Run: supabase secrets set GROQ_API_KEY=your_key");
-      }
-      
-      const errorMsg: Message = {
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        role: "error",
-        content: errorMessage,
+        role: "assistant",
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment. 🔄",
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) => [...prev, errorMessage]);
+      
+      toast({
+        title: "Connection Error",
+        description: "Unable to reach the chatbot service. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -171,14 +158,6 @@ export default function ChatBot() {
             </Button>
           </div>
 
-          {/* Error Alert */}
-          {error && (
-            <Alert variant="destructive" className="m-4 mb-0">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs">{error}</AlertDescription>
-            </Alert>
-          )}
-
           {/* Messages Area */}
           <ScrollArea className="flex-1 p-4 bg-gray-50 dark:bg-gray-900">
             <div className="space-y-4">
@@ -195,19 +174,17 @@ export default function ChatBot() {
                       "max-w-[85%] rounded-2xl px-4 py-2.5 break-words shadow-sm",
                       message.role === "user"
                         ? "bg-green-600 text-white dark:bg-green-700"
-                        : message.role === "error"
-                        ? "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300 border border-red-200 dark:border-red-800"
                         : "bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 border border-gray-200 dark:border-gray-700"
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                      {message.content}
+                    </p>
                     <p
                       className={cn(
                         "text-[10px] mt-1.5",
                         message.role === "user"
                           ? "text-green-100"
-                          : message.role === "error"
-                          ? "text-red-500 dark:text-red-400"
                           : "text-gray-400 dark:text-gray-500"
                       )}
                     >
@@ -223,6 +200,9 @@ export default function ChatBot() {
               {/* Quick Questions */}
               {showQuickQuestions && messages.length === 1 && !isLoading && (
                 <div className="space-y-2 mt-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2">
+                    Quick questions:
+                  </p>
                   {QUICK_QUESTIONS.map((question, index) => (
                     <button
                       key={index}

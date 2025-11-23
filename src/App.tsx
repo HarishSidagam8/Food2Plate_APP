@@ -14,7 +14,6 @@ const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const DonorDashboard = lazy(() => import("./pages/DonorDashboard"));
 const ReceiverDashboard = lazy(() => import("./pages/ReceiverDashboard"));
 const Impact = lazy(() => import("./pages/Impact"));
-const CommunityFeed = lazy(() => import("./pages/CommunityFeed"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -42,7 +41,6 @@ const App = () => (
               <Route path="/receiver" element={<ReceiverDashboard />} />
               <Route path="/receiver-dashboard" element={<ReceiverDashboard />} />
               <Route path="/impact" element={<Impact />} />
-              <Route path="/community" element={<CommunityFeed />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

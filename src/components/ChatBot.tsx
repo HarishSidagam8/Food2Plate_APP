@@ -3,7 +3,6 @@ import { MessageCircle, X, Send, Loader2, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -31,13 +30,58 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickQuestions, setShowQuickQuestions] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+
+  // Add CSS animation for toast on mount
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Custom error toast function with high z-index
+  const showErrorToast = (title: string, description: string) => {
+    const toastElement = document.createElement('div');
+    toastElement.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 99999; background: #ef4444; color: white; padding: 16px 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 350px; animation: slideIn 0.3s ease-out;';
+    toastElement.innerHTML = `
+      <div style="font-weight: 600; margin-bottom: 4px; font-size: 16px;">${title}</div>
+      <div style="font-size: 14px; opacity: 0.95; line-height: 1.4;">${description}</div>
+    `;
+    
+    document.body.appendChild(toastElement);
+    
+    setTimeout(() => {
+      toastElement.style.animation = 'slideOut 0.3s ease-in';
+      setTimeout(() => toastElement.remove(), 300);
+    }, 4000);
+  };
 
   const sendMessage = async (messageText?: string) => {
     const textToSend = messageText || input.trim();
@@ -78,11 +122,9 @@ export default function ChatBot() {
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to get response. Please try again.',
-        variant: 'destructive',
-      });
+      
+      // Use custom error toast with higher z-index
+      showErrorToast('Error', 'Failed to get response. Please try again.');
 
       const errorMessage: Message = {
         role: 'assistant',

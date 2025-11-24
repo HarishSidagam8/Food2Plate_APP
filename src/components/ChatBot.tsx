@@ -104,7 +104,7 @@ export default function ChatBot() {
         content: msg.content,
       }));
 
-      const { data, error } = await supabase.functions.invoke('chatbot', {
+      const { data, error } = await supabase.functions.invoke('clever-api', {
         body: {
           message: userMessage.content,
           conversationHistory,

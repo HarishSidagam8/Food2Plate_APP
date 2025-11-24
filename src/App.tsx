@@ -56,7 +56,6 @@ export default function ChatBot() {
     setShowQuickQuestions(false);
 
     try {
-      // Prepare conversation history for context (last 10 messages)
       const conversationHistory = messages.slice(-10).map((msg) => ({
         role: msg.role,
         content: msg.content,
@@ -104,25 +103,58 @@ export default function ChatBot() {
     }
   };
 
+  // Don't render anything that could interfere with the main app
   return (
-    <>
+    <div className="chatbot-container">
       {/* Floating Chat Button */}
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-110 transition-all duration-300 z-50 group"
+          style={{
+            position: 'fixed',
+            bottom: '1.5rem',
+            right: '1.5rem',
+            height: '4rem',
+            width: '4rem',
+            borderRadius: '9999px',
+            zIndex: 9999,
+          }}
+          className="shadow-2xl bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-110 transition-all duration-300 group"
         >
           <MessageCircle className="h-7 w-7 text-white group-hover:rotate-12 transition-transform" />
-          <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full animate-pulse" />
+          <span 
+            style={{
+              position: 'absolute',
+              top: '-0.25rem',
+              right: '-0.25rem',
+              height: '1rem',
+              width: '1rem',
+              borderRadius: '9999px',
+            }}
+            className="bg-red-500 animate-pulse"
+          />
         </Button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-[380px] h-[600px] shadow-2xl z-50 flex flex-col overflow-hidden border-2 border-green-200 dark:border-green-800 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <Card 
+          style={{
+            position: 'fixed',
+            bottom: '1.5rem',
+            right: '1.5rem',
+            width: '380px',
+            height: '600px',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+          className="shadow-2xl border-2 border-green-200 dark:border-green-800 bg-background/95 backdrop-blur"
+        >
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-5 py-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-5 py-4 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30">
                 <Sparkles className="h-6 w-6 text-white" />
@@ -146,13 +178,17 @@ export default function ChatBot() {
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4" ref={scrollRef}>
+          <div 
+            className="flex-1 overflow-y-auto px-4 py-4 space-y-4" 
+            ref={scrollRef}
+            style={{ minHeight: 0 }}
+          >
             {messages.map((message, index) => (
               <div
                 key={index}
                 className={`flex ${
                   message.role === 'user' ? 'justify-end' : 'justify-start'
-                } animate-in slide-in-from-bottom-2 duration-300`}
+                }`}
               >
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
@@ -180,7 +216,7 @@ export default function ChatBot() {
 
             {/* Quick Questions */}
             {showQuickQuestions && messages.length === 1 && (
-              <div className="space-y-2 animate-in fade-in-50 duration-500">
+              <div className="space-y-2">
                 <p className="text-xs text-muted-foreground text-center mb-3">Quick questions to get started:</p>
                 {QUICK_QUESTIONS.map((question, index) => (
                   <Button
@@ -198,12 +234,12 @@ export default function ChatBot() {
             )}
 
             {isLoading && (
-              <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300">
+              <div className="flex justify-start">
                 <div className="bg-muted/80 backdrop-blur-sm rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 border border-border">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" />
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
                   </div>
                   <span className="text-sm text-muted-foreground">Thinking...</span>
                 </div>
@@ -212,7 +248,7 @@ export default function ChatBot() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t bg-background/50 backdrop-blur-sm px-4 py-4">
+          <div className="border-t bg-background/50 backdrop-blur-sm px-4 py-4 flex-shrink-0">
             <div className="flex gap-2">
               <Input
                 value={input}
@@ -241,6 +277,6 @@ export default function ChatBot() {
           </div>
         </Card>
       )}
-    </>
+    </div>
   );
 }

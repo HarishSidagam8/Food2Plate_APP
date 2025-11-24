@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Loader2, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Bot, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,7 +23,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm your Food2Plate Assistant. I can help you with food donations, quality analysis, eco tips, and platform guidance. How can I assist you today?",
+      content: "Hello! I'm your Food2Plate Assistant. I can help you with food donations, quality analysis, eco tips, and platform guidance. How can I assist you today?",
       timestamp: new Date(),
     },
   ]);
@@ -103,180 +102,163 @@ export default function ChatBot() {
     }
   };
 
-  // Don't render anything that could interfere with the main app
   return (
-    <div className="chatbot-container">
+    <>
       {/* Floating Chat Button */}
       {!isOpen && (
-        <Button
+        <button
           onClick={() => setIsOpen(true)}
-          size="lg"
-          style={{
-            position: 'fixed',
-            bottom: '1.5rem',
-            right: '1.5rem',
-            height: '4rem',
-            width: '4rem',
-            borderRadius: '9999px',
-            zIndex: 9999,
-          }}
-          className="shadow-2xl bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 hover:scale-110 transition-all duration-300 group"
+          className="fixed bottom-5 right-5 h-14 w-14 rounded-full shadow-xl bg-emerald-600 hover:bg-emerald-700 transition-all duration-300 hover:scale-110 z-[9999] flex items-center justify-center group"
+          aria-label="Open chat"
         >
-          <MessageCircle className="h-7 w-7 text-white group-hover:rotate-12 transition-transform" />
-          <span 
-            style={{
-              position: 'absolute',
-              top: '-0.25rem',
-              right: '-0.25rem',
-              height: '1rem',
-              width: '1rem',
-              borderRadius: '9999px',
-            }}
-            className="bg-red-500 animate-pulse"
-          />
-        </Button>
+          <MessageCircle className="h-6 w-6 text-white" />
+          <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full animate-pulse" />
+        </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <Card 
-          style={{
-            position: 'fixed',
-            bottom: '1.5rem',
-            right: '1.5rem',
-            width: '380px',
-            height: '600px',
-            zIndex: 9999,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-          className="shadow-2xl border-2 border-green-200 dark:border-green-800 bg-background/95 backdrop-blur"
+        <div 
+          className="fixed bottom-5 right-5 w-[400px] max-w-[calc(100vw-2rem)] h-[550px] max-h-[calc(100vh-2rem)] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden border border-gray-200 dark:border-gray-800"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-5 py-4 flex items-center justify-between flex-shrink-0">
+          <div className="bg-emerald-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30">
-                <Sparkles className="h-6 w-6 text-white" />
+              <div className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center">
+                <Bot className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-white text-lg">Food2Plate AI</h3>
-                <p className="text-xs text-green-100 flex items-center gap-1">
-                  <span className="h-2 w-2 bg-green-300 rounded-full animate-pulse" />
+                <h3 className="font-semibold text-white text-base">Food2Plate AI</h3>
+                <p className="text-xs text-emerald-100 flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 bg-emerald-300 rounded-full" />
                   Online
                 </p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={() => setIsOpen(false)}
-              className="hover:bg-white/20 text-white rounded-full"
+              className="h-8 w-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"
+              aria-label="Close chat"
             >
-              <X className="h-5 w-5" />
-            </Button>
+              <X className="h-4 w-4 text-white" />
+            </button>
           </div>
 
           {/* Messages Area */}
           <div 
-            className="flex-1 overflow-y-auto px-4 py-4 space-y-4" 
             ref={scrollRef}
+            className="flex-1 overflow-y-auto px-4 py-4 bg-gray-50 dark:bg-gray-950 space-y-4"
             style={{ minHeight: 0 }}
           >
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                className={`flex gap-2 ${
+                  message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                 }`}
               >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
-                    message.role === 'user'
-                      ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-br-sm'
-                      : 'bg-muted/80 backdrop-blur-sm rounded-bl-sm border border-border'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                  <p
-                    className={`text-[10px] mt-1.5 ${
+                {/* Avatar */}
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.role === 'user' 
+                    ? 'bg-emerald-600' 
+                    : 'bg-gray-300 dark:bg-gray-700'
+                }`}>
+                  {message.role === 'user' ? (
+                    <User className="h-4 w-4 text-white" />
+                  ) : (
+                    <Bot className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                  )}
+                </div>
+
+                {/* Message Bubble */}
+                <div className="flex flex-col max-w-[75%]">
+                  <div
+                    className={`rounded-2xl px-4 py-2.5 ${
                       message.role === 'user'
-                        ? 'text-green-100'
-                        : 'text-muted-foreground'
+                        ? 'bg-emerald-600 text-white rounded-tr-sm'
+                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-tl-sm'
                     }`}
                   >
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                      {message.content}
+                    </p>
+                  </div>
+                  <span className={`text-[10px] text-gray-500 dark:text-gray-400 mt-1 ${
+                    message.role === 'user' ? 'text-right' : 'text-left'
+                  }`}>
                     {message.timestamp.toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
-                  </p>
+                  </span>
                 </div>
               </div>
             ))}
 
             {/* Quick Questions */}
             {showQuickQuestions && messages.length === 1 && (
-              <div className="space-y-2">
-                <p className="text-xs text-muted-foreground text-center mb-3">Quick questions to get started:</p>
+              <div className="space-y-2 pt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2">
+                  Quick questions:
+                </p>
                 {QUICK_QUESTIONS.map((question, index) => (
-                  <Button
+                  <button
                     key={index}
-                    variant="outline"
-                    size="sm"
                     onClick={() => sendMessage(question)}
-                    className="w-full justify-start text-left h-auto py-3 px-4 hover:bg-green-50 dark:hover:bg-green-950 hover:border-green-300 transition-all duration-200"
                     disabled={isLoading}
+                    className="w-full text-left text-sm px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span className="text-sm">{question}</span>
-                  </Button>
+                    {question}
+                  </button>
                 ))}
               </div>
             )}
 
+            {/* Loading Indicator */}
             {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-muted/80 backdrop-blur-sm rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2 border border-border">
+              <div className="flex gap-2">
+                <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-tl-sm px-4 py-2.5 flex items-center gap-2">
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" />
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                    <span className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                    <span className="w-2 h-2 bg-emerald-600 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
                   </div>
-                  <span className="text-sm text-muted-foreground">Thinking...</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Typing...</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Input Area */}
-          <div className="border-t bg-background/50 backdrop-blur-sm px-4 py-4 flex-shrink-0">
+          <div className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 flex-shrink-0">
             <div className="flex gap-2">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything..."
+                placeholder="Type a message..."
                 disabled={isLoading}
-                className="flex-1 rounded-full border-2 focus:border-green-400 dark:focus:border-green-600"
+                className="flex-1 h-10 rounded-full border-gray-300 dark:border-gray-700 focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-emerald-500"
               />
-              <Button
+              <button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
-                size="icon"
-                className="rounded-full bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg"
+                className="h-10 w-10 rounded-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center transition-colors flex-shrink-0"
+                aria-label="Send message"
               >
                 {isLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="h-4 w-4 text-white animate-spin" />
                 ) : (
-                  <Send className="h-5 w-5" />
+                  <Send className="h-4 w-4 text-white" />
                 )}
-              </Button>
+              </button>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2 text-center">
-              Powered by AI • Press Enter to send
-            </p>
           </div>
-        </Card>
+        </div>
       )}
-    </div>
+    </>
   );
 }

@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 import logo from '@/assets/food2plate-logo.png';
 import { z } from 'zod';
 
-
 const signupSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
@@ -45,34 +44,36 @@ export default function Auth() {
     try {
       const validated = signupSchema.parse(signupData);
       
-      const redirectUrl = `${window.location.origin}/`;
+      // Sign up the user with metadata
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: validated.email,
         password: validated.password,
-        options: { emailRedirectTo: redirectUrl }
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: validated.full_name,
+            role: validated.role
+          }
+        }
       });
 
       if (signUpError) throw signUpError;
 
-      if (authData.user) {
-        const { error: profileError } = await (supabase as any)
-          .from('profiles')
-          .insert({
-            user_id: authData.user.id,
-            full_name: validated.full_name,
-            email: validated.email,
-            role: validated.role
-          });
-
-        if (profileError) throw profileError;
-
-        toast.success('Account created successfully!');
-        navigate(validated.role === 'donor' ? '/donor-dashboard' : '/receiver-dashboard');
+      if (!authData.user) {
+        throw new Error('User creation failed');
       }
+
+      // The profile will be created automatically by the database trigger
+      // So we just show success message
+      toast.success('Account created! Please check your email to verify your account.');
+      
+      // Don't navigate yet - user needs to verify email first
+      
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else {
+        console.error('Signup error:', error);
         toast.error(error.message || 'Failed to create account');
       }
     } finally {
@@ -113,7 +114,7 @@ export default function Auth() {
       if (error) throw error;
 
       if (authData.user) {
-        const { data: profile } = await (supabase as any)
+        const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('user_id', authData.user.id)

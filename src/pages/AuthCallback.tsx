@@ -80,48 +80,35 @@ export default function AuthCallback() {
   const handleRoleSelection = async () => {
     setLoading(true);
     try {
-      if (!userId) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('No user found');
-        setUserId(user.id);
-      }
-
       const { data: { user } } = await supabase.auth.getUser();
+      
       if (!user) throw new Error('No user found');
 
-      // Check if profile exists
-      const { data: existingProfile } = await supabase
+      // Use UPSERT to handle both new and existing profiles
+      // This works whether the trigger created a profile or not
+      const { error } = await supabase
         .from('profiles')
-        .select('user_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        .upsert({
+          user_id: user.id,
+          full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
+          email: user.email || '',
+          role: selectedRole,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id',  // Update if user_id already exists
+          ignoreDuplicates: false  // Always update
+        });
 
-      if (existingProfile) {
-        // Update existing profile
-        const { error } = await supabase
-          .from('profiles')
-          .update({ 
-            role: selectedRole,
-            full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User'
-          })
-          .eq('user_id', user.id);
-
-        if (error) throw error;
-      } else {
-        // Insert new profile
-        const { error } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: user.id,
-            full_name: user.user_metadata.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email || '',
-            role: selectedRole
-          });
-
-        if (error) throw error;
+      if (error) {
+        console.error('Upsert error:', error);
+        throw error;
       }
 
       toast.success('Profile setup complete!');
+      
+      // Small delay to ensure database commit
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       navigate(selectedRole === 'donor' ? '/donor-dashboard' : '/receiver-dashboard');
     } catch (error: any) {
       console.error('Role selection error:', error);

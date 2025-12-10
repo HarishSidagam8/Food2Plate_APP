@@ -31,7 +31,14 @@ The platform ensures:
 ### 🤖 AI Food Quality Predictor  
 - Uses an AI model to analyze uploaded food images.  
 - Predicts **freshness**, **confidence**, and **estimated shelf life**.  
-- Automatically attaches an **AI Quality Report** to each food post.  
+- Automatically attaches an **AI Quality Report** to each food post.
+  
+### 🤖 AI ChatBot
+-Helps donors with uploading food images, understanding platform rules
+-Guides receivers on how to claim or find nearby food
+-Educates users on food safety & eco-friendly tips
+-Explains AI analysis results
+-Reduces dependency on helpdesk/support
 
 ### 📦 Donor Food Posting  
 - Donors upload image + details + location on map.  
